@@ -1,0 +1,5 @@
+backup/
+vol/
+.git
+.cache
+envs.props
