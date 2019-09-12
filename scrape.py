@@ -9,10 +9,10 @@ def put_to_dynamodb(args):
     """given the list of string arguments, put one item to dynamodb table"""
     dynamodb.put_item( \
     TableName='whats_new_routes', \
-    Item={'uuid':{'S':args[0]}, 'name':{'S':args[1]},'grade':{'S':args[2]}, 'stars':{'N':args[3]}, 'ts':{'S':args[4]} })
+    Item={'uuid':{'S':args[0]}, 'name':{'S':args[1]},'grade':{'S':args[2]}, 'stars':{'S':args[3]}, 'ts':{'S':args[4]}, 'ttl':{'N':args[5]} })
 
 def generate_uuid(args):
-    """given a list of strings, return a md5 hash that will be the primary key in dynamodb table"""
+    """given a list of strings, return an md5 hash. This will be the primary key in dynamodb table"""
     uuid = ""
     for arg in args:
         uuid += "".join(arg.lower().split())
@@ -51,23 +51,35 @@ for route in rows:
     else:
         continue
 
+    #
     # get route name
+    #
     route_name        = route.strong.string
     if route_name not in names:
         names.append(route_name)
     else:
         continue
-
+    
+    #
     # get grade of route and number of stars
+    #
     grade = route.findAll('span', {"class": "rateYDS"})[0].string
     stars = str(len( route.findAll("span", {"class":"scoreStars"})[0].findAll("img") ))
-   
+  
+    #
+    # create a timestamp by subtracting "created time ago" from today() 
+    #
     created_timestamp = str(int((datetime.today() - timedelta(minutes=minutes_ago)).timestamp()))
+ 
+    #
+    # dynamodb time-to-live, set timestamp when record will expire
+    #
+    ttl = str( int((datetime.today() + timedelta(days=2)).timestamp()) ) 
    
     print (route_name, grade, stars, created_timestamp) 
     
-    parsed_row = [route_name, grade, stars, created_timestamp]
-    primary_key = generate_uuid(parsed_row[:-1])
+    parsed_row = [route_name, grade, stars, created_timestamp, ttl]
+    primary_key = generate_uuid(parsed_row[:-2])
 
     put_to_dynamodb( [primary_key] + parsed_row )
 
