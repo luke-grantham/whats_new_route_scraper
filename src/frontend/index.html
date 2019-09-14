@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <script src="../../node_modules/chart.js/dist/Chart.min.js"></script>
+    <script src="chart1_data.js" ></script>
+  </head>
+   
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Header</h1>
+        <p>paragraph</p>
+      </div>
+    </div>
+
+    <body>
+      <div class="container">
+
+        <div class="chart-container row" style="width: 600px; height: 400px; margin: auto">
+          <div class="col-12">
+            <h2>Star Rating Count</h2>
+            <canvas id="chart1"></canvas>
+          </div
+        </div>
+ 
+        <div class="chart-container row" style="width: 600px; height: 400px; margin: auto">
+          <div class="col-12">
+            <h2>Chart Title</h2>
+            <canvas id="chart2"></canvas>
+          </div
+        </div>
+
+      </div>
+
+    <script>
+        console.log(chart1_data);
+
+        <!-- CHART 1 -->
+
+        var pieData = {
+            datasets: [{
+                data: chart1_data,
+                backgroundColor: ["#878BB6", "#4ACAB4", "#FF8153", "#FFEA88"]
+            }],
+            labels: ["1 star", "2 star", "3 star"]
+        };
+
+        // Get the context of the canvas element we want to select
+        var countries = document.getElementById("chart1").getContext("2d");
+        new Chart(chart1, {
+            type: 'bar',
+            data: pieData,
+            options: {
+                legend: { display: false },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        <!-- CHART 2 -->
+         
+        var pieData2 = {
+            datasets: [{
+                data: [20, 40, 10, 30],
+                backgroundColor: ["#878BB6", "#4ACAB4", "#FF8153", "#FFEA88"]
+            }]
+        };
+
+        // Get the context of the canvas element we want to select
+        var countries = document.getElementById("chart2").getContext("2d");
+        new Chart(chart2, {
+            type: 'pie',
+            data: pieData2
+        });
+    </script>
+</body>
+
+</html>
